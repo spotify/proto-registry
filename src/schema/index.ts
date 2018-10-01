@@ -24,6 +24,7 @@ export class Schema {
   public readonly all: ReflectionObject[]
 
   constructor (root: Root) {
+    root.resolveAll()
     const allBuilder: ReflectionObject[] = []
     buildAll(root, root, allBuilder)
 
