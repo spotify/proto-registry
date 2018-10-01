@@ -1,0 +1,14 @@
+id: action-container-proto-registry
+description: Action container to invoke protoc directly
+system: action-containers
+owner: dflemstr
+visibility: private
+dependencies: []
+facts:
+  lifecycle: experimental
+  tags:
+     - action
+     - container
+     - protobuf
+     - protoc
+     - registry
