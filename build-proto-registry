@@ -25,8 +25,8 @@ if [ -z "$registry_out" ]
 then echo >&2 "$0: Missing OUTPUT/-o"
 fi
 
-fds_path=$(realpath -f "$fds_path")
-registry_out=$(realpath -f "$registry_out")
+fds_path=$(realpath "$fds_path")
+registry_out=$(realpath "$registry_out")
 
 cd "$(dirname $0)"
 
