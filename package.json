@@ -1,0 +1,92 @@
+{
+  "name": "registry",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@blueprintjs/core": "^3.6.1",
+    "@blueprintjs/select": "^3.2.0",
+    "fuse.js": "^3.2.1",
+    "history": "^4.7.2",
+    "protobufjs": "^6.8.8",
+    "react": "^16.5.2",
+    "react-commonmark": "^3.0.0",
+    "react-dom": "^16.5.2",
+    "react-markdown": "^3.6.0",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
+    "react-router-redux": "^5.0.0-alpha.8",
+    "redux": "^4.0.0",
+    "redux-localstorage": "^1.0.0-rc5",
+    "redux-localstorage-filter": "^0.1.1",
+    "scroll-into-view": "^1.9.3",
+    "typescript-fsa": "^3.0.0-beta-2"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-app-rewired eject",
+    "lint": "npm-run-all lint:standard lint:tslint",
+    "lint:standard": "standard",
+    "lint:tslint": "tslint -c tslint.json --project .",
+    "lint-fix": "npm-run-all lint-fix:standard lint-fix:tslint",
+    "lint-fix:standard": "standard --fix",
+    "lint-fix:tslint": "tslint --fix -c tslint.json --project .",
+    "pre-commit": "npm-run-all lint test"
+  },
+  "devDependencies": {
+    "@types/history": "^4.7.0",
+    "@types/jasmine": "^2.8.8",
+    "@types/jest": "^23.3.2",
+    "@types/react": "^16.4.14",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-redux": "^6.0.9",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/react-router-redux": "^5.0.16",
+    "@types/redux-localstorage": "^1.0.8",
+    "@types/redux-localstorage-filter": "^0.1.4",
+    "eslint-plugin-typescript": "^0.12.0",
+    "husky": "^1.0.1",
+    "jest-runner-standard": "^0.0.12",
+    "node-sass": "^4.9.3",
+    "npm-run-all": "^4.1.3",
+    "react-app-rewire-typescript": "^2.0.2",
+    "react-app-rewired": "^1.6.2",
+    "react-scripts": "^1.1.5",
+    "sass-loader": "^7.1.0",
+    "standard": "^12.0.1",
+    "ts-jest": "^23.10.2",
+    "tslint": "^5.11.0",
+    "tslint-config-standard": "^8.0.1",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.0.3",
+    "typescript-eslint-parser": "^19.0.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testMatch": [
+      "**/src/**/__tests__/**/*.{ts,tsx}",
+      "**/src/**/*.(spec|test).{ts,tsx}"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ]
+  },
+  "standard": {
+    "parser": "typescript-eslint-parser",
+    "plugins": [
+      "typescript"
+    ],
+    "env": [
+      "jest",
+      "es6",
+      "browser"
+    ]
+  }
+}

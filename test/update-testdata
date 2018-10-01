@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+dir=$(mktemp -d 2>/dev/null || mktemp -d -t 'proto-registry')
+out=$(cd $(dirname "$0"); pwd)/testdata.fds.pb
+
+pushd "$dir" &>/dev/null
+git clone --depth 1 https://github.com/protocolbuffers/protobuf.git
+pushd protobuf/src &>/dev/null
+protoc --include_imports --include_source_info -o "$out" -I . google/protobuf/*.proto
+echo >&2 "$0: created $out"
+gzip "$out"
+echo >&2 "$0: compressed $out as $out.gz"
+popd &>/dev/null
+rm -rf protobuf
+popd &>/dev/null

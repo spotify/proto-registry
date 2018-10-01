@@ -1,0 +1,59 @@
+/* Copyright 2018 Spotify AB. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import '~@blueprintjs/core/src/common/variables';
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &.bp3-dark {
+    background-color: #30404d;
+  }
+}
+
+.app-main {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.app-main-sidebar {
+  padding-top: $pt-grid-size;
+  padding-bottom: $pt-grid-size;
+  display: flex;
+  transition: all 0.3s;
+  flex-basis: 300px;
+  flex-shrink: 0;
+  overflow: auto;
+
+  &.hidden {
+    padding-left: 0;
+    padding-right: 0;
+    flex-basis: 0;
+  }
+}
+
+.app-main-content {
+  padding: $pt-grid-size;
+  display: flex;
+  flex-grow: 1;
+  overflow: auto;
+
+  .bp3-running-text {
+    flex-grow: 1;
+  }
+}
