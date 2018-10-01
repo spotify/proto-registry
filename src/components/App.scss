@@ -1,0 +1,45 @@
+@import '~@blueprintjs/core/src/common/variables';
+
+.app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &.bp3-dark {
+    background-color: #30404d;
+  }
+}
+
+.app-main {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.app-main-sidebar {
+  padding-top: $pt-grid-size;
+  padding-bottom: $pt-grid-size;
+  display: flex;
+  transition: all 0.3s;
+  flex-basis: 300px;
+  flex-shrink: 0;
+  overflow: auto;
+
+  &.hidden {
+    padding-left: 0;
+    padding-right: 0;
+    flex-basis: 0;
+  }
+}
+
+.app-main-content {
+  padding: $pt-grid-size;
+  display: flex;
+  flex-grow: 1;
+  overflow: auto;
+
+  .bp3-running-text {
+    flex-grow: 1;
+  }
+}
