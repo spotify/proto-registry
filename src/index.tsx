@@ -14,7 +14,7 @@ import App from './components/App'
 import './index.css'
 import reducers, { IState } from './reducers'
 import registerServiceWorker from './registerServiceWorker'
-import { SchemaLoader } from './schema'
+import { SchemaLoader } from './schema/loader'
 import schemaUrl from './schema/schema.pb'
 
 /* tslint:disable */

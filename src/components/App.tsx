@@ -41,14 +41,25 @@ interface IProps {
 
 interface IState {
   readonly schema: Schema | null,
+  readonly error: string | null
 }
 
 // The component that represents the entire registry application
 class App extends React.PureComponent<IProps, IState> {
-  public state: IState = {schema: null}
+  public state: IState = { schema: null, error: null }
+  private mounted: boolean = false
 
   public componentDidMount () {
-    this.props.schema.then((schema) => this.setState({schema}))
+    this.mounted = true
+    this.props.schema.then((schema) => {
+      if (this.mounted) {
+        this.setState({ ...this.state, schema })
+      }
+    }).catch(() => {/* don't care for now */})
+  }
+
+  public componentWillUnmount () {
+    this.mounted = false
   }
 
   public render () {
@@ -56,7 +67,7 @@ class App extends React.PureComponent<IProps, IState> {
       onHideTree, onShowTree, refToaster, selected, showTree,
       useDarkTheme, onUseDarkTheme, onUseLightTheme
     } = this.props
-    const {schema} = this.state
+    const { schema } = this.state
 
     let node
     if (schema !== null && selected !== null) {
