@@ -1,0 +1,41 @@
+#!/bin/sh -eu
+
+fds_path=${INPUT:-}
+registry_out=${OUTPUT:-}
+
+while getopts "i:o:" opt
+do
+  case "$opt" in
+    i )
+    fds_path=$OPTARG
+    ;;
+    o )
+    registry_out=$OPTARG
+    ;;
+    \? ) echo >&2 "$0: Usage $0 -i <input file descriptor set> -o <out dir>"
+    ;;
+  esac
+done
+
+if [ -z "$fds_path" ]
+then echo >&2 "$0: Missing INPUT/-i"
+fi
+
+if [ -z "$registry_out" ]
+then echo >&2 "$0: Missing OUTPUT/-o"
+fi
+
+cd "$(dirname $0)"
+
+cp "$fds_path" src/schema/schema.pb
+export CI=true
+yarn lint
+yarn test
+yarn build
+
+mkdir -p "$registry_out/build"
+cp -r build/. "$registry_out/build/."
+echo >> "$registry_out/Dockerfile" <<EOF
+FROM gcr.io/web-infra/nginx-static-site:1.9-1
+COPY build/ /srv/www
+EOF

@@ -1,0 +1,7 @@
+version: 2
+
+template:
+  type: actionContainer
+  actionContainer:
+    name: proto-registry
+
