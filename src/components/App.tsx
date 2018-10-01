@@ -6,19 +6,21 @@ import {
   NavbarGroup,
   NavbarHeading,
   NonIdealState,
+  Spinner,
   Toaster
 } from '@blueprintjs/core'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import actions from '../actions'
 import * as reducers from '../reducers'
-import schema, { all } from '../schema'
+import { Schema } from '../schema'
 import './App.scss'
 import TypeDocs from './TypeDocs'
 import TypeSearch from './TypeSearch'
 import TypeTree from './TypeTree'
 
 interface IProps {
+  readonly schema: Promise<Schema>,
   // The fully qualified name of the selected Protobuf type
   readonly selected: null | string,
   // Whether to render using the dark theme
@@ -37,14 +39,31 @@ interface IProps {
   readonly refToaster: (toaster: Toaster) => void,
 }
 
+interface IState {
+  readonly schema: Schema | null,
+}
+
 // The component that represents the entire registry application
-class App extends React.PureComponent<IProps> {
+class App extends React.PureComponent<IProps, IState> {
+  public state: IState = {schema: null}
+
+  public componentDidMount () {
+    this.props.schema.then((schema) => this.setState({schema}))
+  }
+
   public render () {
     const {
       onHideTree, onShowTree, refToaster, selected, showTree,
       useDarkTheme, onUseDarkTheme, onUseLightTheme
     } = this.props
-    const node = selected ? schema.lookup(selected) : null
+    const {schema} = this.state
+
+    let node
+    if (schema !== null && selected !== null) {
+      node = schema.root.lookup(selected)
+    } else {
+      node = null
+    }
 
     const onToggleTree = showTree ? onHideTree : onShowTree
     const onToggleTheme = useDarkTheme ? onUseLightTheme : onUseDarkTheme
@@ -67,7 +86,7 @@ class App extends React.PureComponent<IProps> {
               active={useDarkTheme}
             />
             <NavbarDivider/>
-            <TypeSearch nodes={all}/>
+            {schema ? <TypeSearch nodes={schema.all}/> : <Spinner size={Spinner.SIZE_SMALL}/>}
           </NavbarGroup>
         </Navbar>
       </header>
@@ -82,7 +101,7 @@ class App extends React.PureComponent<IProps> {
         icon='help'
         title='No schema type selected'
         description='Find a type by searching or selecting it in the hierarchy tree.'
-        action={<TypeSearch nodes={all}/>}
+        action={schema ? <TypeSearch nodes={schema.all}/> : <Spinner/>}
       />
     )
 
@@ -90,7 +109,7 @@ class App extends React.PureComponent<IProps> {
       <main className='app-main'>
         <Toaster ref={refToaster}/>
         <nav className={'app-main-sidebar' + (showTree ? '' : ' hidden')}>
-          <TypeTree roots={schema.nestedArray} selected={selected}/>
+          {schema ? <TypeTree roots={schema.root.nestedArray} selected={selected}/> : <Spinner/>}
         </nav>
         <article className='app-main-content'>
           {content}

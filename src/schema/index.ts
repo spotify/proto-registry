@@ -1,28 +1,46 @@
 import { ReflectionObject, Root } from 'protobufjs'
 import { FileDescriptorSet, IFileDescriptorSet } from 'protobufjs/ext/descriptor'
 import { buildRoot } from './parser'
-import buffer from './schema.pb'
 
-// TODO(dflemstr): Instead of having the schema as a global variable, load it dynamically.
-const bytes = new Uint8Array(buffer)
-const descriptor: IFileDescriptorSet = FileDescriptorSet.decode(bytes) as any as IFileDescriptorSet
-const root: Root = buildRoot(descriptor)
-root.resolveAll()
+export class SchemaLoader {
+  private url: string
 
-export const all: ReflectionObject[] = []
+  constructor (url: string) {
+    this.url = url
+  }
 
-const buildAll = (node: ReflectionObject): void => {
-  if (node !== root) {
-    all.push(node)
+  public load (): Promise<Schema> {
+    return fetch(this.url)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => new Uint8Array(buffer))
+      .then((bytes) => FileDescriptorSet.decode(bytes) as any as IFileDescriptorSet)
+      .then((descriptor) => buildRoot(descriptor))
+      .then((root) => new Schema(root))
+  }
+}
+
+export class Schema {
+  public readonly root: Root
+  public readonly all: ReflectionObject[]
+
+  constructor (root: Root) {
+    const allBuilder: ReflectionObject[] = []
+    buildAll(root, root, allBuilder)
+
+    this.root = root
+    this.all = allBuilder
+  }
+}
+
+const buildAll = (r: Root, node: ReflectionObject, output: ReflectionObject[]): void => {
+  if (node !== r) {
+    output.push(node)
   }
 
   if ('nestedArray' in node) {
-    const typedNode = node as {nestedArray: ReflectionObject[]}
+    const typedNode = node as { nestedArray: ReflectionObject[] }
     for (const child of typedNode.nestedArray) {
-      buildAll(child)
+      buildAll(r, child, output)
     }
   }
 }
-buildAll(root)
-
-export default root

@@ -1,1 +1,4 @@
-declare module '*.pb'
+declare module '*.pb' {
+  const url: string
+  export default url
+}

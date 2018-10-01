@@ -14,6 +14,8 @@ import App from './components/App'
 import './index.css'
 import reducers, { IState } from './reducers'
 import registerServiceWorker from './registerServiceWorker'
+import { SchemaLoader } from './schema'
+import schemaUrl from './schema/schema.pb'
 
 /* tslint:disable */
 // Sadly this library is not ES6 module compatible
@@ -34,7 +36,7 @@ const refToaster = (t: Toaster) => { toaster = t }
 const component = (
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <App refToaster={refToaster}/>
+      <App refToaster={refToaster} schema={new SchemaLoader(schemaUrl).load()}/>
     </ConnectedRouter>
   </Provider>
 )

@@ -7,6 +7,8 @@ import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import { applyMiddleware, createStore } from 'redux'
 import reducers from '../reducers'
 import App from './App'
+import { SchemaLoader } from '../schema'
+import schemaUrl from '../schema/schema.pb'
 
 // A simple sanity end-to-end test
 it('renders without crashing', () => {
@@ -14,10 +16,11 @@ it('renders without crashing', () => {
   const store = createStore(reducers, applyMiddleware(routerMiddleware(history)))
 
   const refToaster = (toaster: Toaster) => {/* do nothing */}
+  const schema = new SchemaLoader(schemaUrl).load()
   const component = (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <App refToaster={refToaster}/>
+        <App refToaster={refToaster} schema={schema}/>
       </ConnectedRouter>
     </Provider>
   )

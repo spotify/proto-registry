@@ -46,7 +46,6 @@
     "@types/react-router-redux": "^5.0.16",
     "@types/redux-localstorage": "^1.0.8",
     "@types/redux-localstorage-filter": "^0.1.4",
-    "arraybuffer-loader": "^1.0.6",
     "eslint-plugin-typescript": "^0.12.0",
     "husky": "^1.0.1",
     "jest-runner-standard": "^0.0.12",

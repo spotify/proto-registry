@@ -33,12 +33,6 @@ module.exports = (config, env) => {
 
   const cssMatcher = r => ruleTestMatches(r, '.css')
   const cssLoader = getLoader(config.module.rules, cssMatcher)
-  const pbRules = {
-    test: /\.pb$/,
-    use: [
-      { loader: 'arraybuffer-loader' }
-    ]
-  }
   const scssRules = {
     test: /\.scss$/,
     use: (cssLoader.use || cssLoader.loader).concat([{
@@ -47,7 +41,6 @@ module.exports = (config, env) => {
   }
 
   const fileLoaderMatcher = r => loaderNameMatches(r, 'file-loader')
-  addBeforeRule(config.module.rules, fileLoaderMatcher, pbRules)
   addBeforeRule(config.module.rules, fileLoaderMatcher, scssRules)
 
   return config

@@ -163,7 +163,7 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
         sourceLocations.filter(isLocation(sourcePathIndex, i, MESSAGE_NESTED_TYPE_LOCATION))
       const nestedType =
         buildType(descriptor.nestedType[i], messageSourceLocations, sourcePathIndex + 2, syntax)
-      nestedType.add(nestedType)
+      type.add(nestedType)
 
       const options = descriptor.nestedType[i].options
       if (options && options.mapEntry) {
