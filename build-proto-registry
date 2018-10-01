@@ -38,7 +38,4 @@ yarn build
 
 mkdir -p "$registry_out/build"
 cp -r build/. "$registry_out/build/."
-echo >> "$registry_out/Dockerfile" <<EOF
-FROM gcr.io/web-infra/nginx-static-site:1.9-1
-COPY build/ /srv/www
-EOF
+cp Dockerfile.deploy "$registry_out/Dockerfile"

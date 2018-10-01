@@ -1,0 +1,2 @@
+FROM gcr.io/web-infra/nginx-static-site:1.9-1
+COPY build/ /srv/www
