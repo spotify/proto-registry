@@ -3,22 +3,21 @@
 This is an implementation of a Protobuf schema registry.  Right now, the implementation is fairly
 basic and focuses on the documentation aspects of a registry.
 
-## Action container
+## Docker image
 
-This repository builds an action container that can be used to generate a Protobuf registry for any
+This repository builds a docker image that can be used to generate a Protobuf registry for any
 set of schemas.
 
-Add this action:
+For example, using Google Cloud Build, put this in your `cloudbuild.yaml`:
 
 ```yaml
-  - action: 'gcr.io/action-containers/proto-registry:<version>'
+steps:
+  - name: 'gcr.io/<tbd>/proto-registry:<version>'
     envs:
-      INPUT: # path to a binary Protobuf file containing a FileDescriptorSet
-      OUTPUT: # path to a directory where a Dockerfile + data should be put
-  - action: 'gcr.io/action-containers/bash-docker-tugboat:<version>'
-    args: ['--deploy']
-    envs:
-      # Matching parameters to deploy the OUTPUT directory above
+      INPUT: 'schema.fds.pb' # path to a binary Protobuf file containing a FileDescriptorSet
+      OUTPUT: 'registry' # path to a directory where a Dockerfile + data should be put
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/registry', 'registry' ]
 ```
 
 ## Development
