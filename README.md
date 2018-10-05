@@ -30,6 +30,12 @@ can generate that file by running this command on some arbitrary protobufs:
       -o path/to/src/schema/schema.pb \
       -I dir dir/**/*.proto
 
+There is a file descriptor set used by the tests that is generated with the `./build-testdata`
+script that you can use if you don't have `protoc` installed:
+
+    gunzip -k testdata.fds.pb.gz
+    cp testdata.fds.pb src/schema/schema.pb
+
 After that, simply run the usual:
 
     yarn

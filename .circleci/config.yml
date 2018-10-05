@@ -8,7 +8,18 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
+          TAG=0.1.${CIRCLE_BUILD_NUM:-0}
           docker build -t spotify/proto-registry:$TAG .
+
+          # Try to build a static site using the built Docker image:
+          cid=$(docker create -v /data --name testdata busybox)
+          trap "docker rm $cid" EXIT
+          gunzip -k testdata.fds.pb.gz
+          docker cp testdata.fds.pb testdata:/data
+          docker run --rm --volumes-from testdata spotify/proto-registry:$TAG -i /data/testdata.fds.pb -o /data/testoutput
+          docker cp testdata:/data/testoutput testoutput
+          docker build testoutput
+
+          # Deploy resulting image if everything is fine:
           # docker login -u $DOCKER_USER -p $DOCKER_PASS
           # docker push spotify/proto-registry:$TAG
