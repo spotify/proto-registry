@@ -5,5 +5,5 @@ COPY config-overrides.js package.json tsconfig.json tslint.json yarn.lock /home/
 RUN yarn
 COPY public/ /home/node/app/public/
 COPY src/ /home/node/app/src/
-COPY build-proto-registry Dockerfile.deploy nginx.conf /home/node/app/
-ENTRYPOINT ["/home/node/app/build-proto-registry"]
+COPY build-support/build.sh Dockerfile.deploy nginx.conf /home/node/app/
+ENTRYPOINT ["/home/node/app/build.sh"]
