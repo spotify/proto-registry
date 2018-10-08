@@ -1,4 +1,5 @@
 # Proto registry [![CircleCI](https://circleci.com/gh/spotify/proto-registry.svg?style=svg&circle-token=b6db707b79e5d01a588b64b78fe535ba3e13557c)](https://circleci.com/gh/spotify/proto-registry)
+(Netlify test)
 
 This is an implementation of a Protobuf schema registry.  Right now, the implementation is fairly
 basic and focuses on the documentation aspects of a registry.
