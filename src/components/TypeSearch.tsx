@@ -48,6 +48,7 @@ class TypeSearch extends React.PureComponent<IProps> {
         itemRenderer={renderNode}
         itemListPredicate={this.itemListPredicate}
         onItemSelect={this.onItemSelect}
+        popoverProps={{ minimal: true }}
       />
     )
   }
@@ -89,7 +90,6 @@ const renderNode = (node: ReflectionObject, props: IItemRendererProps): JSX.Elem
       key={node.fullName}
       onClick={handleClick}
       text={text}
-      popoverProps={{ minimal: true }}
     />
   )
 }
