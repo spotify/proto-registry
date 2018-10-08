@@ -39,5 +39,6 @@ yarn build
 
 mkdir -p "$registry_out/build"
 cp -r build/. "$registry_out/build/."
+cp _redirects "$registry_out/build"
 cp nginx.conf "$registry_out/nginx.conf"
 cp Dockerfile.deploy "$registry_out/Dockerfile"
