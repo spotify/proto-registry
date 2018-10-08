@@ -5,9 +5,11 @@ jobs:
       - image: docker:18.06.1-ce
     steps:
       - checkout
+      - attach_workspace:
+          at: /tmp/workspace
       - setup_remote_docker:
           docker_layer_caching: true
       - run: |
           apk add make 
-          
+          cd /tmp/workspace 
           make
