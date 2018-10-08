@@ -12,7 +12,7 @@ For example, using Google Cloud Build, put this in your `cloudbuild.yaml`:
 
 ```yaml
 steps:
-  - name: 'gcr.io/<tbd>/proto-registry:<version>'
+  - name: 'gcr.io/<tbd>/proto-registry-builder:<version>'
     envs:
       INPUT: 'schema.fds.pb' # path to a binary Protobuf file containing a FileDescriptorSet
       OUTPUT: 'registry' # path to a directory where a Dockerfile + data should be put
@@ -30,11 +30,11 @@ can generate that file by running this command on some arbitrary protobufs:
       -o path/to/src/schema/schema.pb \
       -I dir dir/**/*.proto
 
-There is a file descriptor set used by the tests that is generated with the `./build-testdata`
+There is a file descriptor set used by the tests that is generated with the `./test/update-testdata`
 script that you can use if you don't have `protoc` installed:
 
-    gunzip -k testdata.fds.pb.gz
-    cp testdata.fds.pb src/schema/schema.pb
+    gunzip -k test/testdata.fds.pb.gz
+    cp test/testdata.fds.pb src/schema/schema.pb
 
 After that, simply run the usual:
 
