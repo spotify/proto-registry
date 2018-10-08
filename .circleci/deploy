@@ -1,0 +1,10 @@
+#!/bin/bash
+set -euo pipefail
+# shellcheck source=common.sh
+source "$(dirname "$0")/common.sh"
+
+msg "would deploy $image"
+# docker login -u $DOCKER_USER -p $DOCKER_PASS
+# docker push spotify/proto-registry:$TAG
+
+msg "success!"
