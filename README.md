@@ -1,7 +1,8 @@
 # Proto registry [![CircleCI](https://circleci.com/gh/spotify/proto-registry.svg?style=svg&circle-token=b6db707b79e5d01a588b64b78fe535ba3e13557c)](https://circleci.com/gh/spotify/proto-registry)
 
 This is an implementation of a Protobuf schema registry.  Right now, the implementation is fairly
-basic and focuses on the documentation aspects of a registry.
+basic and focuses on the documentation aspects of a registry.  It is used internally at Spotify
+to power our API documentation for gRPC services.
 
 ## Docker image
 
@@ -48,5 +49,11 @@ The registry responds to resources at `/<type name>` only.  This matches the API
 if requested).  The idea is that the registry should respond with documentation when requested (e.g.
 when the request specifies `Accept: text/html` or similar) and with a [`Type`][Type] otherwise.
 
+## Code of Conduct
+
+This project adheres to the [Open Code of Conduct][code-of-conduct]. By participating, you are
+expected to honor this code.
+
+[code-of-conduct]: https://github.com/spotify/code-of-conduct/blob/master/code-of-conduct.md
 [Any]: https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Any
 [Type]: https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#google.protobuf.Type
