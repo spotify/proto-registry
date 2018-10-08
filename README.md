@@ -4,6 +4,12 @@ This is an implementation of a Protobuf schema registry.  Right now, the impleme
 basic and focuses on the documentation aspects of a registry.  It is used internally at Spotify
 to power our API documentation for gRPC services.
 
+## Demo
+
+A test instance is hosted on Netlify at <https://spotify-proto-registry.netlify.com/>.  Note that
+this instance only hosts documentation, and will not serve [Type] requests correctly, because
+Netlify only offers hosting of static HTML pages.
+
 ## Docker image
 
 This repository builds a docker image that can be used to generate a Protobuf registry for any

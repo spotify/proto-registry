@@ -7,7 +7,9 @@ out=$(cd $(dirname "$0"); pwd)/testdata.fds.pb
 pushd "$dir" &>/dev/null
 git clone --depth 1 https://github.com/protocolbuffers/protobuf.git
 pushd protobuf/src &>/dev/null
-protoc --include_imports --include_source_info -o "$out" -I . google/protobuf/*.proto
+find google/protobuf -maxdepth 1 -name '*.proto' -type f | grep -v 'test' >> index
+find google/protobuf/compiler -maxdepth 1 -name '*.proto' -type f | grep -v 'test' >> index
+protoc --include_imports --include_source_info -o "$out" -I . @index
 echo >&2 "$0: created $out"
 gzip "$out"
 echo >&2 "$0: compressed $out as $out.gz"
