@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+# shellcheck source=common.sh
+source "$(dirname "$0")/common.sh"
+
+msg "creating container for holding test data volumes"
+cid=$(docker create -v /data --name testdata busybox)
+trap 'docker rm $cid >/dev/null && msg "cleaned up container $cid"' EXIT
+gunzip -k test/testdata.fds.pb.gz
+docker cp test/testdata.fds.pb testdata:/data
+
+msg "running a build using $image"
+docker run --rm --volumes-from testdata "$image" -i /data/testdata.fds.pb -o /data/testoutput
+
+msg "transferring output from test data volume"
+rm -rf testoutput
+docker cp testdata:/data/testoutput testoutput
+
+msg "attempting to build the resulting deploy Docker image"
+docker build testoutput
+
+msg "success!"
