@@ -56,6 +56,7 @@ class TypeDocs extends React.PureComponent<IProps> {
           {node.fullName.substr(1)}
           <small> ({kind})</small>
         </H1>
+        {node.filename && <p>Defined in: <code>{node.filename}</code></p>}
         <TypeOverview node={node}/>
         <Comment source={node.comment}/>
         {sections}
