@@ -58,6 +58,8 @@ const MESSAGE_EXTENSION_LOCATION = 6
 
 const ENUM_VALUE_LOCATION = 2
 
+const SERVICE_METHOD_LOCATION = 2
+
 let unnamedMessageIndex = 0
 let unnamedEnumIndex = 0
 let unnamedOneofIndex = 0
@@ -70,6 +72,7 @@ export const buildRoot = (descriptor: IFileDescriptorSet): Root => {
   if (descriptor.file) {
     for (const fileDescriptor of descriptor.file) {
       let filePackage: NamespaceBase = root
+      const filename = fileDescriptor.name || null
       const sourceCodeInfo = fileDescriptor.sourceCodeInfo as ISourceCodeInfo | undefined
       const sourceLocations = sourceCodeInfo ? sourceCodeInfo.location : []
 
@@ -85,28 +88,29 @@ export const buildRoot = (descriptor: IFileDescriptorSet): Root => {
       if (fileDescriptor.messageType) {
         for (let i = 0; i < fileDescriptor.messageType.length; ++i) {
           const messageSourceLocations = sourceLocations.filter(isLocation(0, i, FILE_MESSAGE_TYPE_LOCATION))
-          filePackage.add(buildType(fileDescriptor.messageType[i], messageSourceLocations, 2, fileDescriptor.syntax))
+          filePackage.add(buildType(fileDescriptor.messageType[i], messageSourceLocations, 2,
+            filename, fileDescriptor.syntax))
         }
       }
 
       if (fileDescriptor.enumType) {
         for (let i = 0; i < fileDescriptor.enumType.length; ++i) {
           const enumSourceLocations = sourceLocations.filter(isLocation(0, i, FILE_ENUM_TYPE_LOCATION))
-          filePackage.add(buildEnum(fileDescriptor.enumType[i], enumSourceLocations, 2))
+          filePackage.add(buildEnum(fileDescriptor.enumType[i], enumSourceLocations, 2, filename))
         }
       }
 
       if (fileDescriptor.extension) {
         for (let i = 0; i < fileDescriptor.extension.length; ++i) {
           const extensionSourceLocations = sourceLocations.filter(isLocation(0, i, FILE_EXTENSION_LOCATION))
-          filePackage.add(buildField(fileDescriptor.extension[i], extensionSourceLocations, 2))
+          filePackage.add(buildField(fileDescriptor.extension[i], extensionSourceLocations, 2, filename))
         }
       }
 
       if (fileDescriptor.service) {
         for (let i = 0; i < fileDescriptor.service.length; ++i) {
           const serviceSourceLocations = sourceLocations.filter(isLocation(0, i, FILE_SERVICE_LOCATION))
-          filePackage.add(buildService(fileDescriptor.service[i], serviceSourceLocations, 2))
+          filePackage.add(buildService(fileDescriptor.service[i], serviceSourceLocations, 2, filename))
         }
       }
 
@@ -124,7 +128,7 @@ export const buildRoot = (descriptor: IFileDescriptorSet): Root => {
 }
 
 const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
-                   sourcePathIndex: number, syntax?: string): Type => {
+                   sourcePathIndex: number, filename: string | null, syntax?: string): Type => {
 
   // Create the message type
   const name = descriptor.name
@@ -132,16 +136,13 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
   const typeOptions = fromDescriptorOptions(descriptor.options, MessageOptions)
   const type = new Type(finalName, typeOptions)
 
-  for (const location of sourceLocations) {
-    if (location.path.length === sourcePathIndex) {
-      type.comment = location.leadingComments || location.trailingComments || null
-    }
-  }
+  type.filename = filename
+  type.comment = extractComment(sourceLocations, sourcePathIndex)
 
   /* Oneofs */
   if (descriptor.oneofDecl) {
     for (const oneofDecl of descriptor.oneofDecl) {
-      type.add(buildOneOf(oneofDecl))
+      type.add(buildOneOf(oneofDecl, filename))
     }
   }
 
@@ -151,7 +152,7 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
       const fieldSourceLocations =
         sourceLocations.filter(isLocation(sourcePathIndex, i, MESSAGE_FIELD_LOCATION))
       const field =
-        buildField(descriptor.field[i], fieldSourceLocations, sourcePathIndex + 2, syntax)
+        buildField(descriptor.field[i], fieldSourceLocations, sourcePathIndex + 2, filename, syntax)
       type.add(field)
       if (descriptor.field[i].hasOwnProperty('oneofIndex')) {
         type.oneofsArray[descriptor.field[i].oneofIndex || 0].add(field)
@@ -165,7 +166,7 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
       const extensionSourceLocations =
         sourceLocations.filter(isLocation(sourcePathIndex, i, MESSAGE_EXTENSION_LOCATION))
       const field =
-        buildField(descriptor.extension[i], extensionSourceLocations, sourcePathIndex + 2, syntax)
+        buildField(descriptor.extension[i], extensionSourceLocations, sourcePathIndex + 2, filename, syntax)
       type.add(field)
     }
   }
@@ -176,7 +177,7 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
       const messageSourceLocations =
         sourceLocations.filter(isLocation(sourcePathIndex, i, MESSAGE_NESTED_TYPE_LOCATION))
       const nestedType =
-        buildType(descriptor.nestedType[i], messageSourceLocations, sourcePathIndex + 2, syntax)
+        buildType(descriptor.nestedType[i], messageSourceLocations, sourcePathIndex + 2, filename, syntax)
       type.add(nestedType)
 
       const options = descriptor.nestedType[i].options
@@ -190,7 +191,7 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
   if (descriptor.enumType) {
     for (let i = 0; i < descriptor.enumType.length; ++i) {
       const enumSourceLocations = sourceLocations.filter(isLocation(sourcePathIndex, i, MESSAGE_ENUM_TYPE_LOCATION))
-      type.add(buildEnum(descriptor.enumType[i], enumSourceLocations, sourcePathIndex + 2))
+      type.add(buildEnum(descriptor.enumType[i], enumSourceLocations, sourcePathIndex + 2, filename))
     }
   }
 
@@ -226,7 +227,7 @@ const buildType = (descriptor: IDescriptorProto, sourceLocations: ILocation[],
 }
 
 const buildField = (descriptor: IFieldDescriptorProto, sourceLocations: ILocation[],
-                    sourcePathIndex: number, syntax?: string): Field => {
+                    sourcePathIndex: number, filename: string | null, syntax?: string): Field => {
   if (typeof descriptor.number !== 'number') {
     throw Error('missing field id')
   }
@@ -268,11 +269,8 @@ const buildField = (descriptor: IFieldDescriptorProto, sourceLocations: ILocatio
     extendee
   )
 
-  for (const location of sourceLocations) {
-    if (location.path.length === sourcePathIndex) {
-      field.comment = location.leadingComments || location.trailingComments || null
-    }
-  }
+  field.filename = filename
+  field.comment = extractComment(sourceLocations, sourcePathIndex)
 
   field.options = fromDescriptorOptions(descriptor.options, FieldOptions)
 
@@ -311,7 +309,7 @@ const buildField = (descriptor: IFieldDescriptorProto, sourceLocations: ILocatio
 }
 
 const buildEnum = (descriptor: IEnumDescriptorProto, sourceLocations: ILocation[],
-                   sourcePathIndex: number): Enum => {
+                   sourcePathIndex: number, filename: string | null): Enum => {
   // Construct values object
   const values = {}
   const comments = {}
@@ -334,12 +332,13 @@ const buildEnum = (descriptor: IEnumDescriptorProto, sourceLocations: ILocation[
     values,
     fromDescriptorOptions(descriptor.options, EnumOptions)
   )
+  enumeration.filename = filename
   enumeration.comment = extractComment(sourceLocations, sourcePathIndex)
 
   return enumeration
 }
 
-const buildOneOf = (descriptor: IOneofDescriptorProto): OneOf => {
+const buildOneOf = (descriptor: IOneofDescriptorProto, filename: string | null): OneOf => {
   return new OneOf(
     // unnamedOneOfIndex is global, not per type, because we have no ref to a type here
     descriptor.name && descriptor.name.length ? descriptor.name : 'oneof' + unnamedOneofIndex++
@@ -348,29 +347,29 @@ const buildOneOf = (descriptor: IOneofDescriptorProto): OneOf => {
 }
 
 const buildService = (descriptor: IServiceDescriptorProto, sourceLocations: ILocation[],
-                      sourcePathIndex: number): Service => {
+                      sourcePathIndex: number, filename: string | null): Service => {
   const finalName =
     descriptor.name && descriptor.name.length ? descriptor.name : 'Service' + unnamedServiceIndex++
   const serviceOptions = fromDescriptorOptions(descriptor.options, ServiceOptions)
   const service = new Service(finalName, serviceOptions)
 
-  for (const location of sourceLocations) {
-    if (location.path.length === sourcePathIndex) {
-      service.comment = location.leadingComments || location.trailingComments || null
-    }
-  }
+  service.filename = filename
+  service.comment = extractComment(sourceLocations, sourcePathIndex)
 
   if (descriptor.method) {
-    for (const method of descriptor.method) {
-      service.add(buildMethod(method))
+    for (let i = 0; i < descriptor.method.length; ++i) {
+      const methodSourceLocations =
+        sourceLocations.filter(isLocation(sourcePathIndex, i, SERVICE_METHOD_LOCATION))
+      service.add(buildMethod(descriptor.method[i], methodSourceLocations, sourcePathIndex + 2, filename))
     }
   }
 
   return service
 }
 
-const buildMethod = (descriptor: IMethodDescriptorProto): Method => {
-  return new Method(
+const buildMethod = (descriptor: IMethodDescriptorProto, sourceLocations: ILocation[],
+                     sourcePathIndex: number, filename: string | null): Method => {
+  const method = new Method(
     // unnamedMethodIndex is global, not per service, because we have no ref to a service here
     descriptor.name && descriptor.name.length ? descriptor.name : 'Method' + unnamedMethodIndex++,
     'rpc',
@@ -380,6 +379,11 @@ const buildMethod = (descriptor: IMethodDescriptorProto): Method => {
     Boolean(descriptor.serverStreaming),
     fromDescriptorOptions(descriptor.options, MethodOptions)
   )
+
+  method.filename = filename
+  method.comment = extractComment(sourceLocations, sourcePathIndex)
+
+  return method
 }
 
 const isLocation = (sourcePathIndex: number, index: number, locationType: number): (location: ILocation) => boolean => {
