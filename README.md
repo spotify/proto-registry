@@ -19,7 +19,7 @@ For example, using Google Cloud Build, put this in your `cloudbuild.yaml`:
 
 ```yaml
 steps:
-  - name: 'gcr.io/<tbd>/proto-registry-builder:<version>'
+  - name: 'spotify/proto-registry-builder:<version>'
     envs:
       INPUT: 'schema.fds.pb' # path to a binary Protobuf file containing a FileDescriptorSet
       OUTPUT: 'registry' # path to a directory where a Dockerfile + data should be put
