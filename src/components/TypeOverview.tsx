@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 import { Pre } from '@blueprintjs/core'
-import { Enum, Namespace, ReflectionObject, Service, Type } from 'protobufjs'
+import { Enum, Namespace, ReflectionObject, Service, Type } from 'protobufjs/light'
 import * as React from 'react'
 import { formatEnum, formatNamespace, formatService, formatType } from './type-utils'
 

@@ -14,7 +14,7 @@
  */
 import { Toaster } from '@blueprintjs/core'
 import createHistory from 'history/createMemoryHistory'
-import { Root } from 'protobufjs'
+import { Root } from 'protobufjs/light'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'

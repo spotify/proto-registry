@@ -62,7 +62,8 @@
     "tslint-config-standard": "^8.0.1",
     "tslint-react": "^3.6.0",
     "typescript": "^3.0.3",
-    "typescript-eslint-parser": "^19.0.1"
+    "typescript-eslint-parser": "^19.0.1",
+    "workerize-loader": "^1.0.4"
   },
   "jest": {
     "transform": {
