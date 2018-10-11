@@ -12,6 +12,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"github.com/golang/protobuf/ptypes"
+	"github.com/golang/protobuf/ptypes/wrappers"
 )
 
 type output struct {
@@ -52,7 +54,7 @@ func main() {
 			log.Fatalln("no input file specified")
 		}
 		if len(outputPath) == 0 {
-			log.Fatalln("no input file specified")
+			log.Fatalln("no output file specified")
 		}
 
 		in, err := ioutil.ReadFile(inputPath)
@@ -228,7 +230,46 @@ func buildMessageOneofs(oneofs []*descriptor.OneofDescriptorProto, output []stri
 }
 
 func buildMessageOptions(options *descriptor.MessageOptions, output []*ptype.Option) ([]*ptype.Option, error) {
-	// TODO
+	if options == nil {
+		return output, nil
+	}
+
+	if options.MessageSetWireFormat != nil {
+		option, err := buildBoolOption("message_set_wire_format", *options.MessageSetWireFormat)
+		if err != nil {
+			return nil, err
+		}
+
+		output = append(output, option)
+	}
+
+	if options.NoStandardDescriptorAccessor != nil {
+		option, err := buildBoolOption("no_standard_descriptor_accessor", *options.NoStandardDescriptorAccessor)
+		if err != nil {
+			return nil, err
+		}
+
+		output = append(output, option)
+	}
+
+	if options.Deprecated != nil {
+		option, err := buildBoolOption("deprecated", *options.Deprecated)
+		if err != nil {
+			return nil, err
+		}
+
+		output = append(output, option)
+	}
+
+	if options.MapEntry != nil {
+		option, err := buildBoolOption("map_entry", *options.MapEntry)
+		if err != nil {
+			return nil, err
+		}
+
+		output = append(output, option)
+	}
+
 	return output, nil
 }
 
@@ -265,4 +306,19 @@ func buildEnumValues(values []*descriptor.EnumValueDescriptorProto, output []*pt
 func buildEnumOptions(options *descriptor.EnumOptions, output []*ptype.Option) ([]*ptype.Option, error) {
 	// TODO
 	return output, nil
+}
+
+func buildBoolOption(name string, value bool) (*ptype.Option, error) {
+	any, err := ptypes.MarshalAny(&wrappers.BoolValue{Value: value})
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &ptype.Option{
+		Name:  name,
+		Value: any,
+	}
+
+	return result, nil
 }
