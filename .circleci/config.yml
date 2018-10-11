@@ -1,8 +1,13 @@
 version: 2
+
+defaults: &defaults
+  working_directory: /workspace
+  docker:
+    - image: docker:18.06.1-ce
+
 jobs:
   build:
-    docker:
-      - image: docker:18.06.1-ce
+    <<: *defaults
     steps:
       - run:
           name: "Install tools"
@@ -12,7 +17,7 @@ jobs:
           docker_layer_caching: true
       - run:
           name: "Set Docker image name"
-          command: echo "export IMAGE=spotify/proto-registry-builder:0.1.${CIRCLE_BUILD_NUM:-0}" >> $BASH_ENV
+          command: echo "export IMAGE=spotify/proto-registry-builder:0.1.${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
       - run:
           name: "Build"
           command: exec /bin/bash -c '.circleci/build "$IMAGE"'
@@ -20,5 +25,35 @@ jobs:
           name: "Test"
           command: exec /bin/bash -c '.circleci/test "$IMAGE"'
       - run:
+          name: "Save image"
+          command: exec /bin/bash -c 'docker save "$IMAGE" | gzip > image.tar.gz && cp "$BASH_ENV" bashenv'
+      - persist_to_workspace:
+          root: /workspace
+          paths:
+            - image.tar.gz
+            - bashenv
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: /workspace
+      - run:
+          name: "Load image"
+          command: "< image.tar.gz gunzip | docker load && cp bashenv $BASH_ENV"
+      - run:
           name: "Deploy"
           command: exec /bin/bash -c '.circleci/deploy "$IMAGE"'
+
+workflows:
+  version: 2
+
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
