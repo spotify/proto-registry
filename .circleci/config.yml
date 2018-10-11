@@ -17,7 +17,9 @@ jobs:
           docker_layer_caching: true
       - run:
           name: "Set Docker image name"
-          command: echo "export IMAGE=spotify/proto-registry-builder:0.1.${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
+          command: |
+            echo "export TAG=0.1.${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
+            echo "export IMAGE=spotify/proto-registry-builder:0.1.${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
       - run:
           name: "Build"
           command: exec /bin/bash -c '.circleci/build "$IMAGE"'
@@ -59,6 +61,7 @@ workflows:
       - deploy:
           requires:
             - build
+          context: proto-gcr-push-access
           filters:
             branches:
               only:

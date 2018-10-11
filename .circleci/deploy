@@ -3,8 +3,30 @@ set -euo pipefail
 # shellcheck source=common.sh
 source "$(dirname "$0")/common.sh"
 
-msg "would deploy $image"
+msg "installing GCR credential helper"
+CREDENTIAL_HELPER_VERSION=1.5.0
+OS=linux
+ARCH=amd64
+curl -L "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${CREDENTIAL_HELPER_VERSION}/docker-credential-gcr_${OS}_${ARCH}-${CREDENTIAL_HELPER_VERSION}.tar.gz" \
+  | tar xz --to-stdout ./docker-credential-gcr > /usr/bin/docker-credential-gcr
+chmod +x /usr/bin/docker-credential-gcr
+
+msg "configuring Docker to use helper"
+credentials_path=$HOME/.config/gcloud/application_default_credentials.json
+mkdir -p "$(dirname "$credentials_path")"
+echo "$SECRET_GCR_CREDENTIALS" > "$credentials_path"
+docker-credential-gcr config
+
+msg "pushing internal GCR image"
+docker tag "$image" "$SECRET_GCR_IMAGE:latest"
+docker push "$SECRET_GCR_IMAGE:latest"
+docker tag "$image" "$SECRET_GCR_IMAGE:$TAG"
+docker push "$SECRET_GCR_IMAGE:$TAG"
+
+msg "would deploy public image $image"
 # docker login -u $DOCKER_USER -p $DOCKER_PASS
 # docker push spotify/proto-registry:$TAG
+msg "would deploy public image $image"
+msg "would deploy public image ${image%:*}:latest"
 
 msg "success!"
