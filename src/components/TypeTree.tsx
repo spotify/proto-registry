@@ -23,7 +23,7 @@ import {
   ReflectionObject,
   Service,
   Type
-} from 'protobufjs'
+} from 'protobufjs/light'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { routerActions } from 'react-router-redux'

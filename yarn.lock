@@ -11705,6 +11705,13 @@ worker-farm@^1.5.2:
   dependencies:
     errno "~0.1.7"
 
+workerize-loader@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/workerize-loader/-/workerize-loader-1.0.4.tgz#5e7d1b7775e842399be50a761e0c4dd902ff42f1"
+  integrity sha512-HMTr/zpuZhm8dbhcK52cMYmn57uf7IJeMZJil+5lL/vC5+AO9wzxZ0FISkGVj78No7HcpaINwAWHGCYx3dnsTw==
+  dependencies:
+    loader-utils "^1.1.0"
+
 wrap-ansi@^2.0.0:
   version "2.1.0"
   resolved "http://registry.npmjs.org/wrap-ansi/-/wrap-ansi-2.1.0.tgz#d8fc3d284dd05794fe84973caecdd1cf824fdd85"

@@ -33,6 +33,11 @@ module.exports = (config, env) => {
 
   const cssMatcher = r => ruleTestMatches(r, '.css')
   const cssLoader = getLoader(config.module.rules, cssMatcher)
+
+  // This is the loader we added with rewireTypescript
+  const tsMatcher = r => ruleTestMatches(r, '.ts')
+  const tsLoader = getLoader(config.module.rules, tsMatcher)
+
   const scssRules = {
     test: /\.scss$/,
     use: (cssLoader.use || cssLoader.loader).concat([{
@@ -40,8 +45,16 @@ module.exports = (config, env) => {
     }])
   }
 
+  const workerTsRules = {
+    test: /\.worker\.tsx?$/,
+    use: ['workerize-loader'].concat(tsLoader.use)
+  }
+  addBeforeRule(config.module.rules, tsMatcher, workerTsRules)
+
   const fileLoaderMatcher = r => loaderNameMatches(r, 'file-loader')
   addBeforeRule(config.module.rules, fileLoaderMatcher, scssRules)
+
+  config.output.globalObject = 'this'
 
   return config
 }

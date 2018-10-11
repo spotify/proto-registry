@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Enum, Field, Method, Namespace, Service, Type } from 'protobufjs'
+import { Enum, Field, Method, Namespace, Service, Type } from 'protobufjs/light'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 
