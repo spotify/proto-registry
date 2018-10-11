@@ -15,7 +15,7 @@ msg "configuring Docker to use helper"
 credentials_path=$HOME/.config/gcloud/application_default_credentials.json
 mkdir -p "$(dirname "$credentials_path")"
 echo "$SECRET_GCR_CREDENTIALS" > "$credentials_path"
-docker-credential-gcr config
+docker-credential-gcr configure-docker
 
 msg "pushing internal GCR image"
 docker tag "$image" "$SECRET_GCR_IMAGE:latest"
