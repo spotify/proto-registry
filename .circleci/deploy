@@ -17,16 +17,19 @@ mkdir -p "$(dirname "$credentials_path")"
 echo "$SECRET_GCR_CREDENTIALS" > "$credentials_path"
 docker-credential-gcr configure-docker
 
-msg "pushing internal GCR image"
+# We can't really keep the "$SECRET_GCR_IMAGE" a secret, since it inadvertently ends up in a lot of
+# CircleCI logs.  It's not very important to keep secret anyway.
+msg "pushing internal GCR image $SECRET_GCR_IMAGE:latest"
 docker tag "$image" "$SECRET_GCR_IMAGE:latest"
 docker push "$SECRET_GCR_IMAGE:latest"
+
+msg "pushing internal GCR image $SECRET_GCR_IMAGE:$TAG"
 docker tag "$image" "$SECRET_GCR_IMAGE:$TAG"
 docker push "$SECRET_GCR_IMAGE:$TAG"
 
 msg "would deploy public image $image"
 # docker login -u $DOCKER_USER -p $DOCKER_PASS
 # docker push spotify/proto-registry:$TAG
-msg "would deploy public image $image"
 msg "would deploy public image ${image%:*}:latest"
 
 msg "success!"
