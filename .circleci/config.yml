@@ -35,6 +35,9 @@ jobs:
   deploy:
     <<: *defaults
     steps:
+      - run:
+          name: "Install tools"
+          command: "apk add --update git bash"
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
