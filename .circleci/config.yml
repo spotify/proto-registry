@@ -39,7 +39,7 @@ jobs:
     steps:
       - run:
           name: "Install tools"
-          command: "apk add --update git bash"
+          command: "apk add --update curl bash"
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
