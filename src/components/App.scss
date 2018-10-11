@@ -38,6 +38,7 @@
   transition: all 0.3s;
   flex-basis: 300px;
   flex-shrink: 0;
+  justify-content: center;
   overflow: auto;
 
   &.hidden {
@@ -52,6 +53,7 @@
   display: flex;
   flex-grow: 1;
   overflow: auto;
+  justify-content: center;
 
   .bp3-running-text {
     flex-grow: 1;
