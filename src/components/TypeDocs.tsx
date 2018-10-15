@@ -16,7 +16,7 @@ import { H1, H2 } from '@blueprintjs/core'
 import { Enum, Field, Method, Namespace, OneOf, ReflectionObject, Service, Type } from 'protobufjs/light'
 import * as React from 'react'
 import Comment from './Comment'
-import { formatEnumValue, formatField, formatMethod } from './type-utils'
+import { formatEnumValue, formatField, formatFullName, formatMethod } from './type-utils'
 import './TypeDocs.scss'
 import TypeOverview from './TypeOverview'
 
@@ -49,12 +49,12 @@ class TypeDocs extends React.PureComponent<IProps> {
     } else {
       kind = 'unknown'
     }
+    const name = formatFullName(node.fullName)
 
     return (
       <React.Fragment>
         <H1 className='type-docs-heading bp3-monospace-text'>
-          {node.fullName.substr(1)}
-          <small> ({kind})</small>
+          {name}<small> ({kind})</small>
         </H1>
         {node.filename && <p>Defined in: <code>{node.filename}</code></p>}
         <TypeOverview node={node}/>

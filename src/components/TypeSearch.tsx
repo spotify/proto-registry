@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 import { routerActions } from 'react-router-redux'
 import actions from '../actions'
 import * as reducers from '../reducers'
+import { formatFullName } from './type-utils'
 
 /* tslint:disable */
 // Sadly this library is not ES6 module compatible
@@ -53,7 +54,7 @@ class TypeSearch extends React.PureComponent<IProps> {
     )
   }
 
-  private inputValueRenderer = (node: ReflectionObject) => node.fullName.substr(1)
+  private inputValueRenderer = (node: ReflectionObject) => formatFullName(node.fullName)
 
   private itemListPredicate = (query: string, items: ReflectionObject[]): ReflectionObject[] =>
     searchNodes(query, items, this.props.recent)
@@ -86,7 +87,7 @@ const renderNode = (node: ReflectionObject, props: IItemRendererProps): JSX.Elem
     <MenuItem
       active={modifiers.active}
       disabled={modifiers.disabled}
-      label={node.fullName.substr(1)}
+      label={(node.parent && node.parent.fullName !== '') ? formatFullName(node.parent.fullName) : '(root)'}
       key={node.fullName}
       onClick={handleClick}
       text={text}

@@ -134,7 +134,7 @@ export const formatMethod = (node: Method): React.ReactNode => {
 
 // Formats a package as idealized protobuf, e.g.: `package spotify.foo;`
 export const formatNamespace = (node: Namespace): React.ReactNode => {
-  return <React.Fragment>package {node.fullName.substr(1)};</React.Fragment>
+  return <React.Fragment>package {formatFullName(node.fullName)};</React.Fragment>
 }
 
 // Formats a declaration option as idealized protobuf, e.g.: `option foo = false;`
@@ -160,3 +160,7 @@ export const formatTypeReference = (type: string,
     return type
   }
 }
+
+export const formatFullName = (fullName: string): string =>
+    // Remove first '.', then use zero-width space to allow line breaks
+    fullName.substr(1).replace(/\./g, '.\u200b')

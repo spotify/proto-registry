@@ -50,12 +50,15 @@
 
 .app-main-content {
   padding: $pt-grid-size;
-  display: flex;
-  flex-grow: 1;
   overflow: auto;
   justify-content: center;
+  flex-grow: 1;
 
   .bp3-running-text {
     flex-grow: 1;
+  }
+
+  .bp3-non-ideal-state {
+    display: flex;
   }
 }
