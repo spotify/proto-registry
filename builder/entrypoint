@@ -38,6 +38,7 @@ yarn test
 yarn build
 
 mkdir -p "$registry_out/build"
+./api-generator -i src/schema/schema.pb -o "$registry_out/build/static/protobuf/{name}.pb"
 cp -r build/. "$registry_out/build/."
 cp _redirects "$registry_out/build"
 cp nginx.conf "$registry_out/nginx.conf"
