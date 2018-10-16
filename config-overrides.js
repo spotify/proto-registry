@@ -47,7 +47,12 @@ module.exports = (config, env) => {
 
   const workerTsRules = {
     test: /\.worker\.tsx?$/,
-    use: ['workerize-loader'].concat(tsLoader.use)
+    use: [{
+      loader: 'workerize-loader',
+      options: {
+        name: 'static/js/[name].[chunkhash:8]'
+      }
+    }].concat(tsLoader.use)
   }
   addBeforeRule(config.module.rules, tsMatcher, workerTsRules)
 
