@@ -51,9 +51,9 @@ After that, simply run the usual:
 ## Design considerations
 
 The registry responds to resources at `/<type name>` only.  This matches the API of the
-[`Any`][Any] type (even though the registry currently doesn't respond with a [`Type`][Type] object
-if requested).  The idea is that the registry should respond with documentation when requested (e.g.
-when the request specifies `Accept: text/html` or similar) and with a [`Type`][Type] otherwise.
+[`Any`][Any] type.  The idea is that the registry should respond with documentation when
+requested (e.g. when the request specifies `Accept: text/html` or similar) and with a
+[`Type`][Type] otherwise.
 
 ## Code of Conduct
 
