@@ -4,6 +4,6 @@ set -euo pipefail
 source "$(dirname "$0")/common.sh"
 
 msg "building $image using docker"
-docker build -f builder/Dockerfile.builder -t "$image" .
+docker build -f builder/Dockerfile -t "$image" .
 
 msg "success!"
