@@ -28,7 +28,7 @@ docker tag "$image" "$SECRET_GCR_IMAGE:$TAG"
 docker push "$SECRET_GCR_IMAGE:$TAG"
 
 msg "triggering public Docker Hub build"
-curl --data build=true -X POST https://registry.hub.docker.com/u/svendowideit/testhook/trigger/$SECRET_DOCKER_HUB_TOKEN/
+curl --data build=true -X POST https://registry.hub.docker.com/u/spotify/proto-registry/trigger/$SECRET_DOCKER_HUB_TOKEN/
 
 msg "would deploy public image $image"
 # docker login -u $DOCKER_USER -p $DOCKER_PASS
