@@ -21,7 +21,7 @@ jobs:
           name: "Set Docker image name"
           command: |
             echo "export TAG=0.1.${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
-            echo "export IMAGE=spotify/proto-registry-builder:0.1.${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
+            echo "export IMAGE=proto-registry-builder:${CIRCLE_BUILD_NUM:-0}" >> "$BASH_ENV"
       - run:
           name: "Build"
           command: exec /bin/bash -c '.circleci/build "$IMAGE"'

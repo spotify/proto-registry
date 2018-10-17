@@ -27,12 +27,15 @@ msg "pushing internal GCR image $SECRET_GCR_IMAGE:$TAG"
 docker tag "$image" "$SECRET_GCR_IMAGE:$TAG"
 docker push "$SECRET_GCR_IMAGE:$TAG"
 
-msg "triggering public Docker Hub build"
-curl --data build=true -X POST https://registry.hub.docker.com/u/spotify/proto-registry/trigger/$SECRET_DOCKER_HUB_TOKEN/
+msg "logging into Docker Hub"
+docker login -u $SECRET_DOCKER_USER -p $SECRET_DOCKER_PASS
 
-msg "would deploy public image $image"
-# docker login -u $DOCKER_USER -p $DOCKER_PASS
-# docker push spotify/proto-registry:$TAG
-msg "would deploy public image ${image%:*}:latest"
+msg "pushing public image spotify/proto-registry:builder-$TAG"
+docker tag "$image" "spotify/proto-registry:builder-$TAG"
+docker push  "spotify/proto-registry:builder-$TAG"
+
+msg "pushing public image spotify/proto-registry:builder-latest"
+docker tag "$image" "spotify/proto-registry:builder-latest"
+docker push  "spotify/proto-registry:builder-latest"
 
 msg "success!"
