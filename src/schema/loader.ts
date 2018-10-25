@@ -12,15 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { INamespace, Namespace, Root } from 'protobufjs/light'
+import { FileDescriptorSet, IFileDescriptorSet } from 'protobufjs/ext/descriptor'
 import { Schema } from './index'
-import * as worker from './loader.worker'
-
-interface IWorker {
-  load (url: string): Promise<INamespace>
-
-  terminate (): void
-}
+import { buildRoot } from './parser'
 
 export class SchemaLoader {
   private url: string
@@ -30,28 +24,11 @@ export class SchemaLoader {
   }
 
   public load (): Promise<Schema> {
-    const workerInstance = (worker as any)() as IWorker
-    return workerInstance.load(this.url).then((data) => {
-
-      // XXX(dflemstr): monkey patch awaiting this PR: https://github.com/dcodeIO/protobuf.js/pull/1122
-      Namespace.isReservedId = function isReservedId (reserved: Array<number[] | string>, id: number) {
-        if (reserved) {
-          for (const reservedElem of reserved) {
-            if (typeof reservedElem !== 'string' && reservedElem[0] <= id && reservedElem[1] > id) {
-              return true
-            }
-          }
-        }
-        return false
-      }
-
-      try {
-        return new Schema(Root.fromJSON(data))
-      } catch (err) {
-        throw Error(`Failed to post-process schema from ${this.url}: ${err.message}`)
-      }
-    }, (err) => {
-      throw Error(`Failed to load schema from ${this.url}: ${err.message}`)
-    })
+    return fetch(this.url)
+      .then((response) => response.arrayBuffer())
+      .then((buffer) => new Uint8Array(buffer))
+      .then((bytes) => FileDescriptorSet.decode(bytes) as any as IFileDescriptorSet)
+      .then((descriptor) => buildRoot(descriptor))
+      .then((root) => new Schema(root))
   }
 }

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 import { H1, H2 } from '@blueprintjs/core'
-import { Enum, Field, Method, Namespace, OneOf, ReflectionObject, Service, Type } from 'protobufjs/light'
+import { Enum, Field, Method, Namespace, OneOf, ReflectionObject, Service, Type } from 'protobufjs'
 import * as React from 'react'
 import Comment from './Comment'
 import { formatEnumValue, formatField, formatFullName, formatMethod } from './type-utils'

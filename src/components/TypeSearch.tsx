@@ -14,7 +14,7 @@
  */
 import { MenuItem } from '@blueprintjs/core'
 import { IItemRendererProps, Suggest } from '@blueprintjs/select'
-import { Enum, Namespace, ReflectionObject, Service, Type } from 'protobufjs/light'
+import { Enum, Namespace, ReflectionObject, Service, Type } from 'protobufjs'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { routerActions } from 'react-router-redux'

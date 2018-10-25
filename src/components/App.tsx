@@ -55,7 +55,7 @@ interface IProps {
 
 interface IState {
   readonly schema: Schema | null,
-  readonly error: Error | null
+  readonly error: string | null
 }
 
 // The component that represents the entire registry application
@@ -67,13 +67,9 @@ class App extends React.PureComponent<IProps, IState> {
     this.mounted = true
     this.props.schema.then((schema) => {
       if (this.mounted) {
-        this.setState({ ...this.state, schema, error: null })
+        this.setState({ ...this.state, schema })
       }
-    }, (error) => {
-      if (this.mounted) {
-        this.setState({ ...this.state, error })
-      }
-    })
+    }).catch(() => {/* don't care for now */})
   }
 
   public componentWillUnmount () {
@@ -85,7 +81,7 @@ class App extends React.PureComponent<IProps, IState> {
       onHideTree, onShowTree, refToaster, selected, showTree,
       useDarkTheme, onUseDarkTheme, onUseLightTheme
     } = this.props
-    const { error, schema } = this.state
+    const { schema } = this.state
 
     let node
     if (schema !== null && selected !== null) {
@@ -96,48 +92,6 @@ class App extends React.PureComponent<IProps, IState> {
 
     const onToggleTree = showTree ? onHideTree : onShowTree
     const onToggleTheme = useDarkTheme ? onUseLightTheme : onUseDarkTheme
-
-    let mainContent
-    if (node) {
-      mainContent = (
-        <div className='bp3-running-text'>
-          <TypeDocs node={node}/>
-        </div>
-      )
-    } else if (schema) {
-      mainContent = (
-        <NonIdealState
-          icon='help'
-          title='No schema type selected'
-          description='Find a type by searching or selecting it in the hierarchy tree.'
-          action={<TypeSearch nodes={schema.all}/>}
-        />
-      )
-    } else if (error) {
-      mainContent = (
-        <NonIdealState
-          icon='error'
-          title='Failed to load schema'
-          description={error.message}
-        />
-      )
-    } else {
-      mainContent = <Spinner/>
-    }
-
-    let typeSearch
-    let typeTree
-    if (schema) {
-      typeSearch = <TypeSearch nodes={schema.all}/>
-      typeTree = <TypeTree roots={schema.root.nestedArray} selected={selected}/>
-    } else if (error) {
-      typeSearch = undefined
-      typeTree = undefined
-    } else {
-      typeSearch = <Spinner size={Spinner.SIZE_SMALL}/>
-      typeTree = <Spinner/>
-    }
-
     const header = (
       <header className='app-header'>
         <Navbar>
@@ -157,20 +111,33 @@ class App extends React.PureComponent<IProps, IState> {
               active={useDarkTheme}
             />
             <NavbarDivider/>
-            {typeSearch}
+            {schema ? <TypeSearch nodes={schema.all}/> : <Spinner size={Spinner.SIZE_SMALL}/>}
           </NavbarGroup>
         </Navbar>
       </header>
+    )
+
+    const content = node ? (
+      <div className='bp3-running-text'>
+        <TypeDocs node={node}/>
+      </div>
+    ) : (
+      <NonIdealState
+        icon='help'
+        title='No schema type selected'
+        description='Find a type by searching or selecting it in the hierarchy tree.'
+        action={schema ? <TypeSearch nodes={schema.all}/> : <Spinner/>}
+      />
     )
 
     const main = (
       <main className='app-main'>
         <Toaster ref={refToaster}/>
         <nav className={'app-main-sidebar' + (showTree ? '' : ' hidden')}>
-          {typeTree}
+          {schema ? <TypeTree roots={schema.root.nestedArray} selected={selected}/> : <Spinner/>}
         </nav>
         <article className='app-main-content'>
-          {mainContent}
+          {content}
         </article>
       </main>
     )
