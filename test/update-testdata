@@ -2,17 +2,40 @@
 set -euo pipefail
 
 dir=$(mktemp -d 2>/dev/null || mktemp -d -t 'proto-registry')
+scratch="$dir/scratch"
+tree="$dir/tree"
 out=$(cd $(dirname "$0"); pwd)/testdata.fds.pb
 
-pushd "$dir" &>/dev/null
+mkdir -p "$scratch"
+mkdir -p "$tree"
+
+pushd "$scratch" &>/dev/null
+echo >&2 "$0: scratch in $PWD"
+
 git clone --depth 1 https://github.com/protocolbuffers/protobuf.git
 pushd protobuf/src &>/dev/null
-find google/protobuf -maxdepth 1 -name '*.proto' -type f | grep -v 'test' >> index
-find google/protobuf/compiler -maxdepth 1 -name '*.proto' -type f | grep -v 'test' >> index
+mkdir -p "$tree/google/protobuf/compiler"
+find google/protobuf -maxdepth 1 -name '*.proto' -type f | grep -v 'test' | xargs -n1 -I'{}' cp '{}' "$tree/{}"
+find google/protobuf/compiler -maxdepth 1 -name '*.proto' -type f | grep -v 'test' | xargs -n1 -I'{}' cp '{}' "$tree/{}"
+popd &>/dev/null # protobuf/src
+
+git clone --depth 1 git@github.com:googleapis/googleapis.git
+pushd googleapis &>/dev/null
+mkdir -p "$tree/google"
+cp -r google/. "$tree/google/."
+mkdir -p "$tree/gapic"
+cp -r gapic/. "$tree/gapic/."
+popd &>/dev/null # googleapis
+
+popd &>/dev/null # scratch
+
+pushd "$tree" &>/dev/null
+echo >&2 "$0: tree in $PWD"
+find -name '*.proto' -type f > index
 protoc --include_imports --include_source_info -o "$out" -I . @index
 echo >&2 "$0: created $out"
 gzip "$out"
 echo >&2 "$0: compressed $out as $out.gz"
-popd &>/dev/null
 rm -rf protobuf
-popd &>/dev/null
+popd &>/dev/null # tree
+
