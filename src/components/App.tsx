@@ -119,7 +119,7 @@ class App extends React.PureComponent<IProps, IState> {
 
     const content = node ? (
       <div className='bp3-running-text'>
-        <TypeDocs node={node}/>
+        <TypeDocs node={node} all={schema ? schema.all : []}/>
       </div>
     ) : (
       <NonIdealState

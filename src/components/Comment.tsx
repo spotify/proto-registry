@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import memoizeOne from 'memoize-one'
 import * as React from 'react'
 
 /* tslint:disable */
@@ -21,15 +22,26 @@ const ReactCommonmark = require('react-commonmark')
 
 interface IProps {
   // The markdown source to display.
-  source: string | null
+  source: string | null,
+  // A mapping of extra link definitions for URLs that can be used in `[markdown style][link]`s.
+  extraUrls: { [link: string]: string }
 }
+
+const formatUrlDefinitions = memoizeOne((urls: {[link: string]: string}): string => {
+  const keys = Object.keys(urls)
+  if (keys.length > 0) {
+    return '\n\n' + Object.keys(urls).map((link) => `[${link.substr(1)}]: ${urls[link]}`).join('\n')
+  } else {
+    return ''
+  }
+})
 
 // A component for displaying markdown comments consistently
 export default class Comment extends React.PureComponent<IProps> {
   public render () {
-    const source = this.props.source
+    const { source, extraUrls } = this.props
     if (source) {
-      return <ReactCommonmark source={source}/>
+      return <ReactCommonmark source={source + formatUrlDefinitions(extraUrls)} escapeHtml={true}/>
     } else {
       return <p><em>(Documentation missing)</em></p>
     }
