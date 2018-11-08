@@ -14,10 +14,12 @@
  */
 import memoizeOne from 'memoize-one'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 
 /* tslint:disable */
 // Sadly this library is not ES6 module compatible
 const ReactCommonmark = require('react-commonmark')
+
 /* tslint:enable */
 
 interface IProps {
@@ -27,7 +29,7 @@ interface IProps {
   extraUrls: { [link: string]: string }
 }
 
-const formatUrlDefinitions = memoizeOne((urls: {[link: string]: string}): string => {
+const formatUrlDefinitions = memoizeOne((urls: { [link: string]: string }): string => {
   const keys = Object.keys(urls)
   if (keys.length > 0) {
     return '\n\n' + Object.keys(urls).map((link) => `[${link.substr(1)}]: ${urls[link]}`).join('\n')
@@ -41,9 +43,19 @@ export default class Comment extends React.PureComponent<IProps> {
   public render () {
     const { source, extraUrls } = this.props
     if (source) {
-      return <ReactCommonmark source={source + formatUrlDefinitions(extraUrls)} escapeHtml={true}/>
+      return (
+        <ReactCommonmark
+          source={source + formatUrlDefinitions(extraUrls)}
+          escapeHtml={true}
+          renderers={{ link: this._link }}
+        />
+      )
     } else {
       return <p><em>(Documentation missing)</em></p>
     }
+  }
+
+  private _link = (props: {href: string, children: React.ReactNode[], title?: string, target?: string}) => {
+    return <Link to={props.href} title={props.title} target={props.target}>{props.children}</Link>
   }
 }
