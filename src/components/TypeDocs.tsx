@@ -30,7 +30,27 @@ interface IProps {
 
 const buildUrls = memoizeOne((all: ReadonlyArray<ReflectionObject>) =>
 all.reduce((result, current) => {
-  result[current.fullName] = '/' + current.fullName.substr(1)
+  const url = '/' + current.fullName.substr(1)
+  result[current.fullName] = url
+
+  if (current instanceof Type) {
+    for (const field of current.fieldsArray) {
+      result[field.fullName] = `${url}#field:${field.name}`
+    }
+    for (const oneof of current.oneofsArray) {
+      result[oneof.fullName] = `${url}#oneof:${oneof.name}`
+    }
+  } else if (current instanceof Enum) {
+    for (const id of Object.keys(current.valuesById)) {
+      const value = current.valuesById[id]
+      result[value.fullName] = `${url}#value:${value.name}`
+    }
+  } else if (current instanceof Service) {
+    for (const method of current.methodsArray) {
+      result[method.fullName] = `${url}#method:${method.name}`
+    }
+  }
+
   return result
 }, {}))
 
@@ -80,7 +100,7 @@ const createFieldSection = (node: Field, extraUrls: {[link: string]: string}): R
   const id = `field:${node.name}`
   return (
     <React.Fragment key={id}>
-      <H2 className='type-docs-subheading bp3-monospace-text'>{formatField(node, false)}</H2>
+      <H2 className='type-docs-subheading bp3-monospace-text' id={id}>{formatField(node, false)}</H2>
       <Comment source={node.comment} extraUrls={extraUrls}/>
     </React.Fragment>
   )
@@ -89,7 +109,7 @@ const createOneofSection = (node: OneOf, extraUrls: {[link: string]: string}): R
   const id = `oneof:${node.name}`
   return (
     <React.Fragment key={id}>
-      <H2 className='type-docs-subheading bp3-monospace-text'>oneof {node.name} {'{\u2026}'}</H2>
+      <H2 className='type-docs-subheading bp3-monospace-text' id={id}>oneof {node.name} {'{\u2026}'}</H2>
       <Comment source={node.comment} extraUrls={extraUrls}/>
       <p><strong>Affected fields:</strong></p>
       <ul>{node.oneof.map((o) => <li key={o}>{o}</li>)}</ul>
@@ -102,7 +122,7 @@ const createEnumValueSection = (name: string, num: string,
   const id = `value:${name}`
   return (
     <React.Fragment key={id}>
-      <H2 className='type-docs-subheading bp3-monospace-text'>{formatEnumValue(num, name)}</H2>
+      <H2 className='type-docs-subheading bp3-monospace-text' id={id}>{formatEnumValue(num, name)}</H2>
       <Comment source={comment} extraUrls={extraUrls}/>
     </React.Fragment>
   )
@@ -112,7 +132,7 @@ const createMethodSection = (node: Method, extraUrls: {[link: string]: string}):
   const id = `method:${node.name}`
   return (
     <React.Fragment key={id}>
-      <H2 className='type-docs-subheading bp3-monospace-text'>{formatMethod(node)}</H2>
+      <H2 className='type-docs-subheading bp3-monospace-text' id={id}>{formatMethod(node)}</H2>
       <Comment source={node.comment} extraUrls={extraUrls}/>
     </React.Fragment>
   )
