@@ -32,7 +32,7 @@ interface IProps {
 const formatUrlDefinitions = memoizeOne((urls: { [link: string]: string }): string => {
   const keys = Object.keys(urls)
   if (keys.length > 0) {
-    return '\n\n' + Object.keys(urls).map((link) => `[${link.substr(1)}]: ${urls[link]}`).join('\n')
+    return '\n\n' + Object.keys(urls).map((link) => `[${link}]: ${urls[link]}`).join('\n')
   } else {
     return ''
   }
