@@ -29,30 +29,30 @@ interface IProps {
 }
 
 const buildUrls = memoizeOne((all: ReadonlyArray<ReflectionObject>) =>
-all.reduce((result, current) => {
-  const url = '/' + current.fullName.substr(1)
-  result[current.fullName.substr(1)] = url
+  all.reduce((result, current) => {
+    const url = '/' + current.fullName.substr(1)
+    result[current.fullName.substr(1)] = url
 
-  if (current instanceof Type) {
-    for (const field of current.fieldsArray) {
-      result[field.fullName.substr(1)] = `${url}#field:${field.name}`
+    if (current instanceof Type) {
+      for (const field of current.fieldsArray) {
+        result[field.fullName.substr(1)] = `${url}#field:${field.name}`
+      }
+      for (const oneof of current.oneofsArray) {
+        result[oneof.fullName.substr(1)] = `${url}#oneof:${oneof.name}`
+      }
+    } else if (current instanceof Enum) {
+      for (const id of Object.keys(current.valuesById)) {
+        const value = current.valuesById[id]
+        result[current.fullName.substr(1) + '.' + value.name] = `${url}#value:${value.name}`
+      }
+    } else if (current instanceof Service) {
+      for (const method of current.methodsArray) {
+        result[method.fullName.substr(1)] = `${url}#method:${method.name}`
+      }
     }
-    for (const oneof of current.oneofsArray) {
-      result[oneof.fullName.substr(1)] = `${url}#oneof:${oneof.name}`
-    }
-  } else if (current instanceof Enum) {
-    for (const id of Object.keys(current.valuesById)) {
-      const value = current.valuesById[id]
-      result[current.fullName.substr(1) + '.' + value.name] = `${url}#value:${value.name}`
-    }
-  } else if (current instanceof Service) {
-    for (const method of current.methodsArray) {
-      result[method.fullName.substr(1)] = `${url}#method:${method.name}`
-    }
-  }
 
-  return result
-}, {}))
+    return result
+  }, {}))
 
 // A component that renders a documentation page for a specific Protobuf type.
 class TypeDocs extends React.PureComponent<IProps> {
