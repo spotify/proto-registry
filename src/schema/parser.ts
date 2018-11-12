@@ -33,15 +33,15 @@ import {
 // for comments
 
 interface ISourceCodeInfo {
-  location: ILocation[],
+  location: ILocation[]
 }
 
 interface ILocation {
-  path: number[],
-  span: number[],
-  leadingComments?: string,
-  trailingComments?: string,
-  leadingDetachedComments?: string[],
+  path: number[]
+  span: number[]
+  leadingComments?: string
+  trailingComments?: string
+  leadingDetachedComments?: string[]
 }
 
 const numberRe = /^(?![eE])[0-9]*(?:\.[0-9]*)?(?:[eE][+-]?[0-9]+)?$/

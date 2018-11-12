@@ -23,9 +23,9 @@ import TypeOverview from './TypeOverview'
 
 interface IProps {
   // The node to be documented.
-  node: ReflectionObject,
+  node: ReflectionObject
   // All known nodes
-  all: ReadonlyArray<ReflectionObject>,
+  all: ReadonlyArray<ReflectionObject>
 }
 
 const buildUrls = memoizeOne((all: ReadonlyArray<ReflectionObject>) =>

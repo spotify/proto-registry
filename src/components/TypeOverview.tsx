@@ -19,7 +19,7 @@ import { formatEnum, formatNamespace, formatService, formatType } from './type-u
 
 interface IProps {
   // The node to build an overview for
-  node: ReflectionObject,
+  node: ReflectionObject
 }
 
 // A component that renders an "overview" of a type, which is a simplified version of the type's

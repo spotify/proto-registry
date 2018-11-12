@@ -30,9 +30,9 @@ const Fuse = require('fuse.js')
 
 interface IProps {
   // The nodes to search
-  nodes: ReflectionObject[],
+  nodes: ReflectionObject[]
   // Recently searched/selected nodes, to be shown as suggestions before the user starts searching
-  recent: ReadonlyArray<string>,
+  recent: ReadonlyArray<string>
   // Called when the user requests a type to be selected
   onSelected: (fullName: string) => void
 }

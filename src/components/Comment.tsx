@@ -24,7 +24,7 @@ const ReactCommonmark = require('react-commonmark')
 
 interface IProps {
   // The markdown source to display.
-  source: string | null,
+  source: string | null
   // A mapping of extra link definitions for URLs that can be used in `[markdown style][link]`s.
   extraUrls: { [link: string]: string }
 }
