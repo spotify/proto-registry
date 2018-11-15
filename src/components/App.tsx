@@ -34,27 +34,27 @@ import TypeSearch from './TypeSearch'
 import TypeTree from './TypeTree'
 
 interface IProps {
-  readonly schema: Promise<Schema>,
+  readonly schema: Promise<Schema>
   // The fully qualified name of the selected Protobuf type
-  readonly selected: null | string,
+  readonly selected: null | string
   // Whether to render using the dark theme
-  readonly useDarkTheme: boolean,
+  readonly useDarkTheme: boolean
   // Whether to show the browse tree
-  readonly showTree: boolean,
+  readonly showTree: boolean
   // Called when the user requests the tree to be shown
-  readonly onShowTree: () => void,
+  readonly onShowTree: () => void
   // Called when the user requests the tree to be hidden
-  readonly onHideTree: () => void,
+  readonly onHideTree: () => void
   // Called when the user wants to use the dark theme
-  readonly onUseDarkTheme: () => void,
+  readonly onUseDarkTheme: () => void
   // Called when the user wants to use the light theme
-  readonly onUseLightTheme: () => void,
+  readonly onUseLightTheme: () => void
   // Called when a toaster has been created
-  readonly refToaster: (toaster: Toaster) => void,
+  readonly refToaster: (toaster: Toaster) => void
 }
 
 interface IState {
-  readonly schema: Schema | null,
+  readonly schema: Schema | null
   readonly error: string | null
 }
 
@@ -119,7 +119,7 @@ class App extends React.PureComponent<IProps, IState> {
 
     const content = node ? (
       <div className='bp3-running-text'>
-        <TypeDocs node={node}/>
+        <TypeDocs node={node} all={schema ? schema.all : []}/>
       </div>
     ) : (
       <NonIdealState

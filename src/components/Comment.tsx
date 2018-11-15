@@ -12,26 +12,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import memoizeOne from 'memoize-one'
 import * as React from 'react'
+import { Link } from 'react-router-dom'
 
 /* tslint:disable */
 // Sadly this library is not ES6 module compatible
 const ReactCommonmark = require('react-commonmark')
+
 /* tslint:enable */
 
 interface IProps {
   // The markdown source to display.
   source: string | null
+  // A mapping of extra link definitions for URLs that can be used in `[markdown style][link]`s.
+  extraUrls: { [link: string]: string }
 }
+
+const formatUrlDefinitions = memoizeOne((urls: { [link: string]: string }): string => {
+  const keys = Object.keys(urls)
+  if (keys.length > 0) {
+    return '\n\n' + keys.map((link) => `[${link}]: ${urls[link]}`).join('\n')
+  } else {
+    return ''
+  }
+})
 
 // A component for displaying markdown comments consistently
 export default class Comment extends React.PureComponent<IProps> {
   public render () {
-    const source = this.props.source
+    const { source, extraUrls } = this.props
     if (source) {
-      return <ReactCommonmark source={source}/>
+      return (
+        <ReactCommonmark
+          source={source + formatUrlDefinitions(extraUrls)}
+          escapeHtml={true}
+          renderers={{ link: this._link }}
+        />
+      )
     } else {
       return <p><em>(Documentation missing)</em></p>
     }
+  }
+
+  private _link = (props: {href: string, children: React.ReactNode[], title?: string, target?: string}) => {
+    return <Link to={props.href} title={props.title} target={props.target}>{props.children}</Link>
   }
 }

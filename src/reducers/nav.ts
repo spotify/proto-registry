@@ -20,13 +20,13 @@ import actions from '../actions'
 
 export interface INav {
   // The currently selected type
-  readonly type: string | null,
+  readonly type: string | null
   // Types that are expanded in the browse tree
-  readonly expandedTypes: ReadonlyArray<string>,
+  readonly expandedTypes: ReadonlyArray<string>
   // The current search query, if any
-  readonly query: null | string,
+  readonly query: null | string
   // Whether to show the browse tree
-  readonly showTree: boolean,
+  readonly showTree: boolean
 }
 
 const INITIAL_STATE: INav = {

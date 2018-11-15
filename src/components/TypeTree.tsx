@@ -33,18 +33,18 @@ import './TypeTree.scss'
 
 interface IProps {
   // The roots of the tree; this corresponds to all root-level Protobuf packages
-  readonly roots: ReadonlyArray<ReflectionObject>,
+  readonly roots: ReadonlyArray<ReflectionObject>
   // The fully qualified names of types that are expanded (e.g. [".spotify", ".spotify.metadata"] to
   // expand the `spotify.metadata` package)
-  readonly expanded: ReadonlyArray<string>,
+  readonly expanded: ReadonlyArray<string>
   // The fully qualified name of the currently selected type, if any.
-  readonly selected: null | string,
+  readonly selected: null | string
   // Called when the user requests a type to be expanded
-  readonly onExpanded: (fullName: string) => void,
+  readonly onExpanded: (fullName: string) => void
   // Called when the user requests a type to be collapsed
-  readonly onCollapse: (fullName: string) => void,
+  readonly onCollapse: (fullName: string) => void
   // Called when the user requests a type to be selected
-  readonly onSelected: (fullName: string) => void,
+  readonly onSelected: (fullName: string) => void
 }
 
 // A component that renders a Protobuf type hierarchy as a tree
