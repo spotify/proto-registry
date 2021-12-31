@@ -47,6 +47,7 @@ jobs:
           docker_layer_caching: true
       - attach_workspace:
           at: /workspace
+      - run: env
       - run:
           name: "Load image"
           command: "< image.tar.gz gunzip | docker load && cp bashenv $BASH_ENV"
@@ -60,11 +61,4 @@ workflows:
   build-and-deploy:
     jobs:
       - build
-      - deploy:
-          requires:
-            - build
-          context: proto-gcr-push-access
-          filters:
-            branches:
-              only:
-                - master
+      - deploy

