@@ -12,7 +12,7 @@ jobs:
       - run:
           name: "Install tools"
           command: |
-            msg "$SECRET_GCR_CREDENTIALS"
+            echo "$SECRET_GCR_CREDENTIALS"
             sed -i -e 's/v[[:digit:]]\.[[:digit:]]/edge/g' /etc/apk/repositories
             apk add --update --update-cache curl git bash protobuf-dev util-linux
       - checkout
