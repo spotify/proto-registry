@@ -1,6 +1,9 @@
 # Proto registry [![CircleCI](https://circleci.com/gh/spotify/proto-registry.svg?style=svg&circle-token=b6db707b79e5d01a588b64b78fe535ba3e13557c)](https://circleci.com/gh/spotify/proto-registry)
 
 
+
+
+
 **Note:** This project has been discontinued. 
 
 
